@@ -1,0 +1,47 @@
+---
+- set_fact:
+    node_architecture: 'x64'
+  when: ansible_architecture == 'x86_64'
+
+- set_fact:
+    node_architecture: 'x86'
+  when: ansible_architecture =='i386'
+
+- set_fact:
+    node_archive_url: 'https://nodejs.org/dist/{{ node_version }}/node-{{ node_version }}-linux-{{ node_architecture }}.tar.gz'
+
+- set_fact:
+    node_state: 'present'
+
+- name: Determine node installed
+  shell: 'node --version'
+  register: result
+  ignore_errors: yes
+
+- set_fact:
+    node_state: 'absent'
+  when: ( result.stderr|trim != "" ) or ( result.stdout|trim != node_version )
+
+- block:
+    - name: Update apt cache
+      apt: update_cache=yes
+
+    - name: Install specific dependencies
+      apt:
+        name: "{{ item }}"
+        state: present
+      with_items:
+        - curl
+        - gzip
+
+    - name: Download and unpack
+      shell: 'curl {{ node_archive_url }} | tar -xz -C /usr/local'
+
+    - name: create link
+      file: dest='/usr/local/bin/node' src='/usr/local/node-{{ node_version }}-linux-{{ node_architecture }}/bin/node' state=link force=yes
+
+    - name: create link
+      file: dest='/usr/local/bin/npm' src='/usr/local/node-{{ node_version }}-linux-{{ node_architecture }}/bin/npm' state=link force=yes
+
+  when: node_state == 'absent'
+...

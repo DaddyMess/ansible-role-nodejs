@@ -1,0 +1,6 @@
+ansible-role-nodejs-01 connection=docker
+ansible-role-nodejs-02 connection=docker
+
+[group1]
+ansible-role-nodejs-01
+ansible-role-nodejs-02
