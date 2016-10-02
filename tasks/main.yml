@@ -17,6 +17,7 @@
   shell: 'node --version'
   register: result
   ignore_errors: yes
+  changed_when: False
 
 - set_fact:
     node_state: 'absent'
