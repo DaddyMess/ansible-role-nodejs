@@ -8,7 +8,7 @@
   when: ansible_architecture =='i386'
 
 - set_fact:
-    node_archive_url: 'https://nodejs.org/dist/{{ nodejs_version }}/node-{{ nodejs_version }}-linux-{{ node_architecture }}.tar.gz'
+    node_archive_url: 'https://nodejs.org/dist/{{ node_version }}/node-{{ node_version }}-linux-{{ node_architecture }}.tar.gz'
 
 - set_fact:
     node_state: 'present'
@@ -39,10 +39,10 @@
       shell: 'curl {{ node_archive_url }} | tar -xz -C /usr/local'
 
     - name: create link
-      file: dest='/usr/local/bin/node' src='/usr/local/node-{{ nodejs_version }}-linux-{{ node_architecture }}/bin/node' state=link force=yes
+      file: dest='/usr/local/bin/node' src='/usr/local/node-{{ node_version }}-linux-{{ node_architecture }}/bin/node' state=link force=yes
 
     - name: create link
-      file: dest='/usr/local/bin/npm' src='/usr/local/node-{{ nodejs_version }}-linux-{{ node_architecture }}/bin/npm' state=link force=yes
+      file: dest='/usr/local/bin/npm' src='/usr/local/node-{{ node_version }}-linux-{{ node_architecture }}/bin/npm' state=link force=yes
 
   when: node_state == 'absent'
 ...
